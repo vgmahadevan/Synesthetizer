@@ -1,0 +1,62 @@
+<link href="https://ssl.gstatic.com/docs/script/css/add-ons.css" rel="stylesheet" />
+
+<style>
+  body{text-align:center};
+</style>
+
+<div class="sidebar" style="width:95%">
+  <div class="form-group block">
+    <table id="myTable" style="margin:auto;">
+      <tr>
+        <th style="text-align: center"><b>Letter</b></th>
+        <th style="text-align: center"><b>Color</b></th>
+      </tr>
+    </table><br>
+    <button class="blue" id="synesthetize">Synesthetize!</button><br>
+    <table style="margin:auto;">
+      <tr>
+        <th><input type="checkbox" id="words"></th>
+        <th><label style="font-size:10px">Color by Word</label></th>
+      </tr>
+    </table>
+  </div>
+</div>
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.1/jquery.min.js"></script>
+
+<script>
+  $(function () {
+    function setColorPicker(hexcode, letter) {
+      $('#'+letter).val(hexcode);
+    }
+
+    var myTable = document.getElementById("myTable");
+
+    var alphabet = "abcdefghijklmnopqrstuvwxyz";
+    for (let i = 0; i < alphabet.length; i++) {
+      var character = alphabet.charAt(i);
+      var row = myTable.insertRow(-1);
+      var cell1 = row.insertCell(0);
+      var cell2 = row.insertCell(1);
+
+      cell1.innerHTML = character.toUpperCase();
+      cell2.innerHTML = '<input type="color" id="'+character+'" name="'+character+'" value="#FFFFFF" style="width:52px; height:26px;">';
+      google.script.run.withSuccessHandler(setColorPicker).withUserObject(character).getColor(character);
+    }
+
+    $('#synesthetize').click(function () {
+      var alphabet = "abcdefghijklmnopqrstuvwxyz";
+      for (let i = 0; i < alphabet.length; i++) {
+        var character = alphabet.charAt(i);
+        var mycolor = $('#'+character).val();
+        google.script.run.setColor(character, mycolor);
+      }
+      if ($('#words').prop('checked')) {
+        google.script.run.colorTextByWords();
+      } else {
+        google.script.run.colorText();
+      }
+    });
+
+  });
+</script>
